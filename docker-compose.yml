@@ -1,0 +1,20 @@
+# Full stack: API + Postgres + Redis.
+#   1) python -m dfs.train --csv data/PJME_hourly.csv --out artifacts/
+#   2) docker compose up --build
+#   3) curl localhost:8000/forecast?h=24
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgresql://dfs:dfs@db:5432/dfs
+      REDIS_URL: redis://cache:6379/0
+    volumes: ["./artifacts:/app/artifacts:ro"]
+    depends_on: [db, cache]
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: dfs, POSTGRES_PASSWORD: dfs, POSTGRES_DB: dfs }
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  cache:
+    image: redis:7-alpine
+volumes: { pgdata: {} }
