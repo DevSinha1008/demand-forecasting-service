@@ -1,41 +1,27 @@
 """features.py — Feature engineering for hourly demand forecasting.
-
-The leakage discipline (the thing this project exists to demonstrate):
-every feature for predicting hour t may use ONLY information available
-strictly before t. Concretely:
-
+every feature for predicting hour t may use the information available
+strictly before t:
   * lag features shift the series by >= 1 hour (lag_1 = value at t-1);
-  * rolling statistics are computed over a window ENDING at t-1, which is
-    why we .shift(1) BEFORE .rolling() — rolling then shifting would still
-    be fine, but rolling WITHOUT shifting would include y_t itself in its
-    own feature: textbook leakage, and the single most common bug in
-    time-series ML;
+  * rolling statistics are computed over a window ending at t-1, which is
+    why we .shift(1) before .rolling() — rolling then shifting would still
+    be fine, but rolling without shifting would include y_t itself in its
+    own feature, which is leakage
   * calendar features (hour, day-of-week, month, …) are known in advance,
-    so they're legitimately usable for any horizon.
-
-The horizon parameter generalises this: to forecast t+h using data through
-t, all lags shift by at least h.
+    so they're usable for any horizon.
 """
-
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
-# Lags chosen for physical meaning, not kitchen-sink:
+# Lags chosen:
 #   1,2,3   — immediate persistence (demand is strongly autocorrelated)
 #   24      — same hour yesterday (daily cycle)
 #   168     — same hour last week (weekly cycle)
 DEFAULT_LAGS = (1, 2, 3, 24, 168)
 DEFAULT_ROLLS = (24, 168)  # rolling mean/std over last day, last week
 
-
 def load_pjm_csv(path: str, value_col: str | None = None) -> pd.Series:
-    """Load a PJM hourly CSV (Datetime + one MW column) into a clean Series.
-
-    Handles the real dataset's quirks: DST duplicates (kept as mean),
-    missing hours (reindexed and interpolated — only ~a handful in PJME).
-    """
     df = pd.read_csv(path)
     dt_col = "Datetime" if "Datetime" in df.columns else df.columns[0]
     if value_col is None:
@@ -50,7 +36,6 @@ def load_pjm_csv(path: str, value_col: str | None = None) -> pd.Series:
     s.name = value_col
     s.attrs["missing_hours_filled"] = int(n_missing)
     return s
-
 
 def build_features(y: pd.Series,
                    lags: tuple[int, ...] = DEFAULT_LAGS,
@@ -85,7 +70,6 @@ def build_features(y: pd.Series,
     # de-duplicate columns (e.g. horizon collapsing two lags onto one name)
     X = X.loc[:, ~X.columns.duplicated()]
     return X
-
 
 def make_xy(y: pd.Series, horizon: int = 1, **kw) -> tuple[pd.DataFrame, pd.Series]:
     """Features + target with warmup NaNs dropped, indices aligned."""
