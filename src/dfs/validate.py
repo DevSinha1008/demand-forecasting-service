@@ -13,10 +13,9 @@ Scheme: EXPANDING-WINDOW walk-forward.
 Each window trains on everything before the test block, predicts the
 block, then the block joins the training set for the next window. This
 mirrors deployment: you always predict the future from the past, and you
-retrain as data arrives. Reported metrics aggregate over ALL windows —
-one lucky window proves nothing; [G] windows of consistent skill do.
+retrain as data arrives. 
 
-Baselines (a model only has skill relative to an alternative):
+Baselines:
   * persistence   — predict y_{t-h}: "demand now = demand an hour ago".
                     Brutally strong at h=1 for autocorrelated series.
   * seasonal-naive — predict y_{t-168}: same hour last week. The honest
@@ -24,23 +23,18 @@ Baselines (a model only has skill relative to an alternative):
                     measured against (beating persistence at h=1 is hard;
                     beating seasonal-naive is the meaningful claim).
 """
-
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
 
-
 def rmse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
 
-
 def mae(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(np.mean(np.abs(y_true - y_pred)))
-
-
+    
 @dataclass
 class WindowResult:
     train_end: pd.Timestamp
@@ -50,7 +44,6 @@ class WindowResult:
     model_mae: float
     persistence_rmse: float
     seasonal_rmse: float
-
 
 @dataclass
 class WalkForwardReport:
@@ -64,11 +57,11 @@ class WalkForwardReport:
     seasonal_rmse: float = 0.0
 
     @property
-    def n_windows(self) -> int:                      # -> CV slot [G]
+    def n_windows(self) -> int:                    
         return len(self.windows)
 
     @property
-    def rmse_improvement_vs_seasonal(self) -> float:  # -> CV slot [E]
+    def rmse_improvement_vs_seasonal(self) -> float: 
         return 100.0 * (self.seasonal_rmse - self.model_rmse) / self.seasonal_rmse
 
     @property
