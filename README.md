@@ -24,6 +24,14 @@ Dockerfile, docker-compose.yml, .github/workflows/ci.yml
 3. Serve the stack: docker compose up --build
 4. Load test: python scripts/loadtest.py http://localhost:8000
 
+Interactive API docs are served at /docs.
+
+## Deployment
+
+Runs on AWS as the same Docker Compose stack on one EC2 instance. Only the
+API port is open; Postgres and Redis stay on the internal Docker network.
+Services restart automatically, so the instance can be stopped when idle.
+
 ## Design
 
 Walk-forward validation, not K-fold. Random splits let the model train

@@ -1,4 +1,4 @@
-"""Load test the running service -> produces CV slots [H]/[I]/[J]/[K].
+"""Load test the running service: cold vs cached latency, throughput, hit rate.
 
 Run against docker compose stack:
     python scripts/loadtest.py http://localhost:8000
@@ -6,8 +6,8 @@ Run against docker compose stack:
 Method: measure two phases:
   cold  — unique (uncached) requests only  -> uncached p99
   hot   — repeated horizons (cache hits)   -> cached p99, hit rate
-[J] = % reduction of cached p99 vs uncached p99. Report req/sec [I] and
-p99 [H] from the hot phase (the realistic serving mix).
+p99 reduction compares the cold phase with the cached phase.
+Throughput and p99 come from the hot phase (the realistic serving mix).
 """
 import sys, time, concurrent.futures as cf
 import httpx
@@ -42,7 +42,7 @@ with cf.ThreadPoolExecutor(WORKERS) as ex:
 wall = time.perf_counter() - t0
 
 print(f"uncached p99        : {pct(cold, 0.99):8.1f} ms   (n={len(cold)})")
-print(f"cached-mix p99  [H] : {pct(hot, 0.99):8.1f} ms   (n={len(hot)})")
-print(f"throughput      [I] : {len(hot)/wall:8.1f} req/sec ({WORKERS} workers)")
-print(f"cache hit rate  [K] : {100*hits/len(hot):8.1f} %")
-print(f"p99 reduction   [J] : {100*(pct(cold,0.99)-pct(hot,0.99))/pct(cold,0.99):8.1f} %")
+print(f"cached-mix p99      : {pct(hot, 0.99):8.1f} ms   (n={len(hot)})")
+print(f"throughput          : {len(hot)/wall:8.1f} req/sec ({WORKERS} workers)")
+print(f"cache hit rate      : {100*hits/len(hot):8.1f} %")
+print(f"p99 reduction       : {100*(pct(cold,0.99)-pct(hot,0.99))/pct(cold,0.99):8.1f} %")

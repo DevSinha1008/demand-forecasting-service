@@ -11,10 +11,13 @@ services:
       REDIS_URL: redis://cache:6379/0
     volumes: ["./artifacts:/app/artifacts:ro"]
     depends_on: [db, cache]
+    restart: unless-stopped
   db:
     image: postgres:16-alpine
     environment: { POSTGRES_USER: dfs, POSTGRES_PASSWORD: dfs, POSTGRES_DB: dfs }
     volumes: ["pgdata:/var/lib/postgresql/data"]
+    restart: unless-stopped
   cache:
     image: redis:7-alpine
+    restart: unless-stopped
 volumes: { pgdata: {} }

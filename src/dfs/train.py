@@ -3,7 +3,7 @@
 Usage:
     python -m dfs.train --csv data/PJME_hourly.csv --out artifacts/
 
-Steps: load -> features -> walk-forward evaluation (produces [E]/[F]/[G])
+Steps: load -> features -> walk-forward evaluation (writes metrics.json)
 -> fit final model on all data -> save model + metrics.json + a features
 manifest, so a served prediction is traceable to the exact training run.
 """

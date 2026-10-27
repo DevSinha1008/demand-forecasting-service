@@ -19,7 +19,7 @@ Baselines:
   * persistence   — predict y_{t-h}: "demand now = demand an hour ago".
                     Brutally strong at h=1 for autocorrelated series.
   * seasonal-naive — predict y_{t-168}: same hour last week. The honest
-                    yardstick for seasonal data and the one [E]% is
+                    yardstick for seasonal data and the one the headline improvement is
                     measured against (beating persistence at h=1 is hard;
                     beating seasonal-naive is the meaningful claim).
 """
@@ -70,12 +70,12 @@ class WalkForwardReport:
 
     def summary(self) -> dict:
         return {
-            "windows [G]": self.n_windows,
+            "windows": self.n_windows,
             "model_rmse_mw": round(self.model_rmse, 1),
-            "model_mae_mw [F]": round(self.model_mae, 1),
+            "model_mae_mw": round(self.model_mae, 1),
             "seasonal_naive_rmse_mw": round(self.seasonal_rmse, 1),
             "persistence_rmse_mw": round(self.persistence_rmse, 1),
-            "rmse_improvement_vs_seasonal_pct [E]":
+            "rmse_improvement_vs_seasonal_pct":
                 round(self.rmse_improvement_vs_seasonal, 1),
             "rmse_improvement_vs_persistence_pct":
                 round(self.rmse_improvement_vs_persistence, 1),

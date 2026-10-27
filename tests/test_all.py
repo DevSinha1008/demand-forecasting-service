@@ -109,7 +109,7 @@ def test_service_endpoints(tmp_path, monkeypatch):
                      "horizon": 1, "train_rows": len(X),
                      "csv_sha256_16": "testmodel"}, f)
     y.iloc[-24 * 14:].to_frame("mw").to_csv(tmp_path / "artifacts" / "recent_history.csv")
-    (tmp_path / "artifacts" / "metrics.json").write_text(js.dumps({"windows [G]": 4}))
+    (tmp_path / "artifacts" / "metrics.json").write_text(js.dumps({"windows": 4}))
 
     monkeypatch.setenv("ARTIFACT_DIR", str(tmp_path / "artifacts"))
     monkeypatch.delenv("REDIS_URL", raising=False)
@@ -125,5 +125,5 @@ def test_service_endpoints(tmp_path, monkeypatch):
         assert len(r1["forecast"]) == 6 and r1["cache"] == "miss"
         r2 = c.get("/forecast?h=6").json()
         assert r2["cache"] == "hit"          # cache path exercised
-        assert c.get("/metrics").json()["windows [G]"] == 4
+        assert c.get("/metrics").json()["windows"] == 4
         assert len(c.get("/history?hours=24").json()["series"]) == 24
