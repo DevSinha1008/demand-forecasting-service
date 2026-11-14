@@ -1,11 +1,10 @@
-"""Tests. The leakage test is the one that matters most: it PROVES the
-feature layer can't see the future, rather than asserting it in a comment.
+"""Tests. The leakage test checks that the feature layer can't see the
+future.
 
 Method: build features twice — once on the full series, once on the series
 truncated at time t. For any t, the feature row AT t must be identical in
 both. If a feature ever differs, it consumed information from after t.
-This is the test that would have caught the classic .rolling()-without-
-.shift() bug.
+It catches the common .rolling()-without-.shift() bug.
 """
 
 import numpy as np

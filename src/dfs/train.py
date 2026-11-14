@@ -24,8 +24,7 @@ from .validate import walk_forward
 
 
 def model_factory():
-    # Deliberately unglamorous model; sophistication lives in the
-    # validation methodology, not the estimator. Fixed seed => reproducible.
+    # Plain XGBoost on tabular features. Fixed seed => reproducible.
     return XGBRegressor(
         n_estimators=300, max_depth=8, learning_rate=0.06,
         subsample=0.9, colsample_bytree=0.9,

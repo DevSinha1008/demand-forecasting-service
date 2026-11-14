@@ -52,8 +52,7 @@ the full series are compared against features built on a series truncated
 at time t, and the row at t must be identical in both.
 
 Model choice. XGBoost on lag, rolling, and calendar features is a
-standard, fast tabular baseline. The model itself is intentionally
-unremarkable; the validation methodology is where the rigour is.
+standard, fast tabular baseline.
 
 Recursive multi-step forecasting. /forecast?h=24 predicts one step,
 appends it to the series, and repeats, so errors compound with the

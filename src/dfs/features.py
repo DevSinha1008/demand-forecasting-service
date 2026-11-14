@@ -1,5 +1,6 @@
 """features.py — Feature engineering for hourly demand forecasting.
-every feature for predicting hour t may use the information available
+
+Leakage rule: every feature for predicting hour t may use the information available
 strictly before t:
   * lag features shift the series by >= 1 hour (lag_1 = value at t-1);
   * rolling statistics are computed over a window ending at t-1, which is

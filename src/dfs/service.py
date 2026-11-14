@@ -153,7 +153,7 @@ def forecast(h: int = Query(24, ge=1, le=168)):
         return body
 
     # Recursive multi-step forecast: predict t+1, append, repeat.
-    # per-horizon model is the standard alternative — discussed in README.)
+    # A direct (per-horizon) model is the standard alternative; see README.
     series = hist.copy()
     preds = []
     for _ in range(h):
