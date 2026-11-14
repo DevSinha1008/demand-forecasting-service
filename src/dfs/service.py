@@ -1,18 +1,13 @@
 """service.py — Serving layer: FastAPI + Postgres (storage) + Redis (cache).
 
 Architecture:
-    client -> FastAPI -> Redis (cache hit? return)
+    client -> FastAPI -> Redis 
                       -> feature build + model predict
                       -> Postgres (log prediction)  -> Redis (fill cache)
 
 Both infra layers degrade gracefully: without REDIS_URL/DATABASE_URL the
 service runs with an in-process LRU cache and no persistence, so the API
 is testable anywhere; docker-compose provides the real stack.
-
-Cache design decision to defend: forecasts for a given (timestamp, horizon)
-are deterministic for a fixed model, so they're ideal cache material.
-Key = model_version:horizon:timestamp, TTL = 1h (a retrain rotates
-model_version, implicitly invalidating stale entries).
 
 Endpoints:
     GET  /health              liveness + which layers are live
@@ -158,7 +153,6 @@ def forecast(h: int = Query(24, ge=1, le=168)):
         return body
 
     # Recursive multi-step forecast: predict t+1, append, repeat.
-    # (Honest limitation to know: errors compound with h; a direct
     # per-horizon model is the standard alternative — discussed in README.)
     series = hist.copy()
     preds = []
