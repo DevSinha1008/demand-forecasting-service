@@ -21,7 +21,7 @@ from dfs.validate import walk_forward, rmse
 
 def synthetic_series(n_hours=24 * 365 * 3, seed=7) -> pd.Series:
     """PJM-shaped synthetic demand: daily + weekly + annual cycles + noise.
-    For TESTS only — CV metrics must come from the real PJME CSV."""
+    Used by the tests only; real evaluation runs on the PJME CSV."""
     rng = np.random.default_rng(seed)
     idx = pd.date_range("2015-01-01", periods=n_hours, freq="h")
     t = np.arange(n_hours)

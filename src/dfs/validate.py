@@ -18,10 +18,8 @@ retrain as data arrives.
 Baselines:
   * persistence   — predict y_{t-h}: "demand now = demand an hour ago".
                     Brutally strong at h=1 for autocorrelated series.
-  * seasonal-naive — predict y_{t-168}: same hour last week. The honest
-                    yardstick for seasonal data and the one the headline improvement is
-                    measured against (beating persistence at h=1 is hard;
-                    beating seasonal-naive is the meaningful claim).
+  * seasonal-naive — predict y_{t-168}: same hour last week. The standard
+                    yardstick for seasonal data.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field

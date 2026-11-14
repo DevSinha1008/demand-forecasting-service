@@ -42,8 +42,7 @@ pooled across all windows rather than averaged per window.
 Two baselines. Persistence (y at t-1) is a strong baseline for
 autocorrelated series at a one-hour horizon, so beating it is a meaningful
 result. Seasonal-naive (same hour last week) is the standard yardstick for
-seasonal data. Both are reported rather than the more flattering figure
-alone.
+seasonal data. Both are reported.
 
 Leakage. Rolling statistics computed without shifting first would
 include the target in its own feature, a common bug in time-series
